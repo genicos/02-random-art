@@ -32,7 +32,8 @@ import Prelude hiding (lookup)
 -- 0
 
 assoc :: Int -> String -> [(String, Int)] -> Int
-assoc def key kvs = error "TBD:assoc"
+assoc def key [] = def
+assoc def key (x:xs) = if (fst x == key) then (assoc (snd x) key xs) else (assoc def key xs)
 
 --------------------------------------------------------------------------------
 {- | `removeDuplicates ls`
