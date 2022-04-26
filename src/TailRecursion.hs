@@ -33,7 +33,10 @@ import Prelude hiding (lookup)
 
 assoc :: Int -> String -> [(String, Int)] -> Int
 assoc def key [] = def
-assoc def key ((a,b):xs) = if (a == key) then (assoc b key xs) else (assoc def key xs)
+assoc def key xs = helper def key (reverse xs)
+  where
+    helper :: Int -> String -> [(String, Int)] -> Int
+    helper def key ((a,b):xs) = if (a == key) then (assoc b key xs) else (assoc def key xs)
 
 --------------------------------------------------------------------------------
 {- | `removeDuplicates ls`
