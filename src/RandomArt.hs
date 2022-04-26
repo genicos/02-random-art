@@ -78,12 +78,12 @@ sampleExpr3 =
 
 exprToString :: Expr -> String
 exprToString VarX                 = "x"
-exprToString VarY                 = error "TBD:VarY"
-exprToString (Sine e)             = error "TBD:Sin"
-exprToString (Cosine e)           = error "TBD:Cos"
-exprToString (Average e1 e2)      = error "TBD:Avg"
-exprToString (Times e1 e2)        = error "TBD:Times"
-exprToString (Thresh e1 e2 e3 e4) = error "TBD:Thresh"
+exprToString VarY                 = "y"
+exprToString (Sine e)             = "sin(pi*" ++ (exprToString e) ++ ")"
+exprToString (Cosine e)           = "cos(pi*" ++ (exprToString e) ++ ")"
+exprToString (Average e1 e2)      = "((" ++ (exprToString e1) ++ "+" ++ (exprToString e2) ++ ")/2)" 
+exprToString (Times e1 e2)        = (exprToString e1) ++ "*" ++ (exprToString e2)
+exprToString (Thresh e1 e2 e3 e4) = "("++ (exprToString e1) ++ "<" ++ (exprToString e2) ++ "?" ++ (exprToString e3) ++ ":" ++ (exprToString e4) ++ ")"
 
 --------------------------------------------------------------------------------
 -- | Evaluating Expressions at a given X, Y co-ordinate ------------------------
@@ -99,7 +99,8 @@ exprToString (Thresh e1 e2 e3 e4) = error "TBD:Thresh"
 -- 0.8090169943749475
 
 eval :: Double -> Double -> Expr -> Double
-eval x y e = error "TBD:eval"
+eval x y e = error "TBD:build"
+
 
 evalFn :: Double -> Double -> Expr -> Double
 evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
