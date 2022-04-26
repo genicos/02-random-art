@@ -33,7 +33,7 @@ import Prelude hiding (lookup)
 
 assoc :: Int -> String -> [(String, Int)] -> Int
 assoc def key [] = def
-assoc def key (x:xs) = if (fst x == key) then (assoc (snd x) key xs) else (assoc def key xs)
+assoc def key ((a,b):xs) = if (a == key) then (assoc b key xs) else (assoc def key xs)
 
 --------------------------------------------------------------------------------
 {- | `removeDuplicates ls`
@@ -102,6 +102,8 @@ Thus, the final value will be `(false, <first value for which condition is no lo
 wwhile :: (a -> (Bool, a)) -> a -> a
 wwhile f x = error "TBD:wwhile"
 
+
+
 --------------------------------------------------------------------------------
 {- | The **fixpoint** of a function `f` starting at `x`
 
@@ -142,7 +144,7 @@ The fixpoint of a function `f` is a point at which `f(x) = x`.
   -}
 
 fixpointL :: (Int -> Int) -> Int -> [Int]
-fixpointL f x = error "TBD:fixpointL"
+fixpointL f x = error "TBD:wwhile"
 
 -- You should see the following behavior at the prompt:
 

@@ -99,8 +99,14 @@ exprToString (Thresh e1 e2 e3 e4) = "("++ (exprToString e1) ++ "<" ++ (exprToStr
 -- 0.8090169943749475
 
 eval :: Double -> Double -> Expr -> Double
-eval x y e = error "TBD:build"
-
+eval x y e = case e of 
+             VarX ->  x
+             VarY ->  y
+             (Sine e1) ->  sin (pi*(eval x y e1))
+             (Cosine e1) ->  cos (pi*(eval x y e1))
+             (Average e1 e2) -> ((eval x y e1) + (eval x y e2)) / 2
+             (Times e1 e2) -> ((eval x y e1) * (eval x y e2))
+             (Thresh e1 e2 e3 e4) -> if ((eval x y e1) < (eval x y e2)) then (eval x y e3) else (eval x y e4)
 
 evalFn :: Double -> Double -> Expr -> Double
 evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
@@ -140,6 +146,13 @@ build 0
   where
     r         = rand 10
 build d       = error "TBD:build"
+  | r == 0    = (Sine (build (d-1)))
+  | r == 1    = (Cosine (build (d-1)))
+  | r == 2    = (Average (build (d-1)) (build (d-1)))
+  | r == 3    = (Times (build (d-1)) (build (d-1)))
+  | r == 4    = (Thresh (build (d-1)) (build (d-1)) (build (d-1)) (build (d-1)))
+  where
+    r         = rand 5
 
 --------------------------------------------------------------------------------
 -- | Best Image "Seeds" --------------------------------------------------------
