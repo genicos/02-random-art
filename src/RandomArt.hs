@@ -25,6 +25,8 @@ data Expr
   | Average Expr Expr
   | Times   Expr Expr
   | Thresh  Expr Expr Expr Expr
+  | Sqr     Expr
+  | Scl     Expr Expr Expr
   deriving (Show)
 
 --------------------------------------------------------------------------------
@@ -84,6 +86,8 @@ exprToString (Cosine e)           = "cos(pi*" ++ (exprToString e) ++ ")"
 exprToString (Average e1 e2)      = "((" ++ (exprToString e1) ++ "+" ++ (exprToString e2) ++ ")/2)" 
 exprToString (Times e1 e2)        = (exprToString e1) ++ "*" ++ (exprToString e2)
 exprToString (Thresh e1 e2 e3 e4) = "("++ (exprToString e1) ++ "<" ++ (exprToString e2) ++ "?" ++ (exprToString e3) ++ ":" ++ (exprToString e4) ++ ")"
+exprToString (Sqr e1)             = "("++ (exprToString e1) ++ "*" ++ (exprToString e1) ++ ")"
+exprToString (Scl e1 e2 e3)       = "("++ (exprToString e1) ++ ">0?" ++ (exprToString e2) ++ "*" ++ (exprToString e3) ++ ":" ++ (exprToString e2) ++ ")"
 
 --------------------------------------------------------------------------------
 -- | Evaluating Expressions at a given X, Y co-ordinate ------------------------
@@ -100,13 +104,15 @@ exprToString (Thresh e1 e2 e3 e4) = "("++ (exprToString e1) ++ "<" ++ (exprToStr
 
 eval :: Double -> Double -> Expr -> Double
 eval x y e = case e of 
-             VarX ->  x
-             VarY ->  y
-             (Sine e1) ->  sin (pi*(eval x y e1))
-             (Cosine e1) ->  cos (pi*(eval x y e1))
-             (Average e1 e2) -> ((eval x y e1) + (eval x y e2)) / 2
-             (Times e1 e2) -> ((eval x y e1) * (eval x y e2))
+             VarX                 ->  x
+             VarY                 ->  y
+             (Sine e1)            ->  sin (pi*(eval x y e1))
+             (Cosine e1)          ->  cos (pi*(eval x y e1))
+             (Average e1 e2)      -> ((eval x y e1) + (eval x y e2)) / 2
+             (Times e1 e2)        -> ((eval x y e1) * (eval x y e2))
              (Thresh e1 e2 e3 e4) -> if ((eval x y e1) < (eval x y e2)) then (eval x y e3) else (eval x y e4)
+             (Sqr e1)             -> ((eval x y e1) * (eval x y e1))
+             (Scl e1 e2 e3)       -> if ((eval x y e1) > 0) then ((eval x y e2)*(eval x y e3)) else (eval x y e2)
 
 evalFn :: Double -> Double -> Expr -> Double
 evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
@@ -145,14 +151,16 @@ build 0
   | otherwise = VarY
   where
     r         = rand 10
-build d       = error "TBD:build"
+build d
   | r == 0    = (Sine (build (d-1)))
   | r == 1    = (Cosine (build (d-1)))
   | r == 2    = (Average (build (d-1)) (build (d-1)))
   | r == 3    = (Times (build (d-1)) (build (d-1)))
   | r == 4    = (Thresh (build (d-1)) (build (d-1)) (build (d-1)) (build (d-1)))
+  | r == 5    = (Sqr (build (d-1)))
+  | r == 6    = (Scl (build (d-1)) (build (d-1)) (build (d-1)))
   where
-    r         = rand 5
+    r         = rand 7
 
 --------------------------------------------------------------------------------
 -- | Best Image "Seeds" --------------------------------------------------------
@@ -160,16 +168,16 @@ build d       = error "TBD:build"
 
 -- grayscale
 g1, g2, g3 :: (Int, Int)
-g1 = (error "TBD:depth1", error "TBD:seed1")
-g2 = (error "TBD:depth2", error "TBD:seed2")
-g3 = (error "TBD:depth3", error "TBD:seed3")
+g1 = (7, 1)
+g2 = (7, 3)
+g3 = (6, 3)
 
 
 -- grayscale
 c1, c2, c3 :: (Int, Int)
-c1 = (error "TBD:depth1", error "TBD:seed1")
-c2 = (error "TBD:depth2", error "TBD:seed2")
-c3 = (error "TBD:depth3", error "TBD:seed3")
+c1 = (10, 0)
+c2 = (9, 4)
+c3 = (11, 2)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
