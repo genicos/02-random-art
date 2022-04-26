@@ -148,7 +148,11 @@ The fixpoint of a function `f` is a point at which `f(x) = x`.
   -}
 
 fixpointL :: (Int -> Int) -> Int -> [Int]
-fixpointL f x = error "TBD:wwhile"
+fixpointL f x = reverse (helper [] f x)
+  where 
+    helper :: [Int] -> (Int -> Int)-> Int -> [Int]
+    helper [] f x =  helper [x] f (f x)
+    helper (y:xs) f x = if (x == y) then (x:xs) else (helper (x:(y:xs)) f (f x))
 
 -- You should see the following behavior at the prompt:
 
