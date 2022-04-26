@@ -100,7 +100,11 @@ Thus, the final value will be `(false, <first value for which condition is no lo
 -- 512
 
 wwhile :: (a -> (Bool, a)) -> a -> a
-wwhile f x = error "TBD:wwhile"
+wwhile f x  
+  | a == False  =  b
+  | otherwise =  wwhile f b
+  where
+    (a,b) = (f x)
 
 
 
